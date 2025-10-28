@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,11 +13,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import { Building2, Upload } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+const businessSchema = z.object({
+  name: z.string().trim().min(1, "Business name is required").max(200),
+  category: z.string().min(1, "Category is required"),
+  description: z.string().trim().max(1000).optional(),
+  address: z.string().trim().max(500).optional(),
+  phone: z.string().trim().max(20).optional(),
+  whatsapp: z.string().trim().max(20).optional(),
+  website: z.string().trim().url("Invalid website URL").max(500).optional().or(z.literal("")),
+});
 
 const AddBusinessPage = () => {
-  const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -27,34 +43,56 @@ const AddBusinessPage = () => {
     website: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast.error("Please sign in to list your business");
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
-    if (!formData.name || !formData.category || !formData.phone) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
+    if (!user) {
+      toast.error("Please sign in to list your business");
+      navigate("/auth");
       return;
     }
 
-    toast({
-      title: "Success!",
-      description: "Your business has been submitted for review.",
-    });
+    setLoading(true);
 
-    // Reset form
-    setFormData({
-      name: "",
-      category: "",
-      description: "",
-      address: "",
-      phone: "",
-      whatsapp: "",
-      website: "",
-    });
+    try {
+      const validated = businessSchema.parse(formData);
+      
+      const { data, error } = await supabase
+        .from("businesses")
+        .insert({
+          owner_id: user.id,
+          name: validated.name,
+          category: validated.category,
+          description: validated.description || null,
+          address: validated.address || null,
+          phone: validated.phone || null,
+          whatsapp: validated.whatsapp || null,
+          website: validated.website || null,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast.success("Business listed successfully!");
+      navigate(`/business/${data.id}`);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        console.error("Error creating business:", error);
+        toast.error("Failed to create business listing");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -197,8 +235,8 @@ const AddBusinessPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full">
-                  Submit Business Listing
+                <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit Business Listing"}
                 </Button>
 
                 <p className="text-sm text-muted-foreground text-center">

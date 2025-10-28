@@ -14,6 +14,7 @@ import {
   Briefcase,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useBusinessCheck } from "@/hooks/useBusinessCheck";
 
 const categories = [
   { icon: Utensils, name: "Food & Dining", count: 245, slug: "food" },
@@ -62,6 +63,8 @@ const featuredBusinesses = [
 ];
 
 const HomePage = () => {
+  useBusinessCheck();
+  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
