@@ -10,6 +10,8 @@ import BusinessProfilePage from "./pages/BusinessProfile";
 import AddBusinessPage from "./pages/AddBusiness";
 import ChatAssistantPage from "./pages/ChatAssistant";
 import AuthPage from "./pages/Auth";
+import ProfilePage from "./pages/Profile";
+import BusinessDashboard from "./pages/BusinessDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,9 +27,11 @@ const App = () => (
             <Route path="/" element={<HomePage />} />
             <Route path="/listings" element={<ListingsPage />} />
             <Route path="/business/:id" element={<BusinessProfilePage />} />
+            <Route path="/business/:id/dashboard" element={<BusinessDashboard />} />
             <Route path="/add-business" element={<AddBusinessPage />} />
             <Route path="/chat" element={<ChatAssistantPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

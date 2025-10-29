@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { categories } from "@/data/categories";
 
 const businessSchema = z.object({
   name: z.string().trim().min(1, "Business name is required").max(200),
@@ -148,15 +149,12 @@ const AddBusinessPage = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="restaurant">Food & Dining</SelectItem>
-                      <SelectItem value="fashion">Fashion & Apparel</SelectItem>
-                      <SelectItem value="real-estate">Real Estate</SelectItem>
-                      <SelectItem value="technology">Tech & IT</SelectItem>
-                      <SelectItem value="beauty">Beauty & Wellness</SelectItem>
-                      <SelectItem value="health">Health & Medical</SelectItem>
-                      <SelectItem value="automotive">Automotive</SelectItem>
-                      <SelectItem value="services">Professional Services</SelectItem>
+                    <SelectContent className="max-h-[300px]">
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.slug} value={cat.name}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

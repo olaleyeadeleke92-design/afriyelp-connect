@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_updates: {
+        Row: {
+          business_id: string
+          content: string
+          created_at: string | null
+          event_date: string | null
+          id: string
+          title: string
+          update_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          content: string
+          created_at?: string | null
+          event_date?: string | null
+          id?: string
+          title: string
+          update_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          content?: string
+          created_at?: string | null
+          event_date?: string | null
+          id?: string
+          title?: string
+          update_type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_updates_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           address: string | null
@@ -26,7 +67,9 @@ export type Database = {
           name: string
           owner_id: string
           phone: string | null
+          status: string | null
           updated_at: string | null
+          verified: boolean | null
           views: number | null
           website: string | null
           website_clicks: number | null
@@ -44,7 +87,9 @@ export type Database = {
           name: string
           owner_id: string
           phone?: string | null
+          status?: string | null
           updated_at?: string | null
+          verified?: boolean | null
           views?: number | null
           website?: string | null
           website_clicks?: number | null
@@ -62,7 +107,9 @@ export type Database = {
           name?: string
           owner_id?: string
           phone?: string | null
+          status?: string | null
           updated_at?: string | null
+          verified?: boolean | null
           views?: number | null
           website?: string | null
           website_clicks?: number | null

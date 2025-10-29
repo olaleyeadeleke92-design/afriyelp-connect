@@ -3,29 +3,9 @@ import Hero from "@/components/Hero";
 import CategoryCard from "@/components/CategoryCard";
 import BusinessCard from "@/components/BusinessCard";
 import { Button } from "@/components/ui/button";
-import {
-  Utensils,
-  Shirt,
-  Home,
-  Laptop,
-  Sparkles,
-  Heart,
-  Car,
-  Briefcase,
-} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBusinessCheck } from "@/hooks/useBusinessCheck";
-
-const categories = [
-  { icon: Utensils, name: "Food & Dining", count: 245, slug: "food" },
-  { icon: Shirt, name: "Fashion & Apparel", count: 189, slug: "fashion" },
-  { icon: Home, name: "Real Estate", count: 312, slug: "real-estate" },
-  { icon: Laptop, name: "Tech & IT", count: 156, slug: "tech" },
-  { icon: Sparkles, name: "Beauty & Wellness", count: 203, slug: "beauty" },
-  { icon: Heart, name: "Health & Medical", count: 178, slug: "health" },
-  { icon: Car, name: "Automotive", count: 134, slug: "auto" },
-  { icon: Briefcase, name: "Professional Services", count: 267, slug: "services" },
-];
+import { categories } from "@/data/categories";
 
 const featuredBusinesses = [
   {
@@ -81,10 +61,15 @@ const HomePage = () => {
               Find exactly what you're looking for
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {categories.map((category) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+            {categories.slice(0, 8).map((category) => (
               <CategoryCard key={category.slug} {...category} />
             ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/listings">
+              <Button variant="outline" size="lg">View All Categories</Button>
+            </Link>
           </div>
         </div>
       </section>

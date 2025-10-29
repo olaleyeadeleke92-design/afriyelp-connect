@@ -43,11 +43,15 @@ const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="hidden md:flex">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" size="sm" className="gap-2 hidden md:flex">
+                    <User className="h-4 w-4" />
+                    {user.email?.split('@')[0]}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">My Profile</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => signOut()}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
