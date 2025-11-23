@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +46,7 @@ const updateSchema = z.object({
 
 const BusinessDashboard = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const user = { id: "mock-user-id" };
   const navigate = useNavigate();
   const [business, setBusiness] = useState<any>(null);
   const [updates, setUpdates] = useState<any[]>([]);
@@ -61,11 +60,11 @@ const BusinessDashboard = () => {
   });
 
   useEffect(() => {
-    if (user && id) {
+    if (id) {
       fetchBusiness();
       fetchUpdates();
     }
-  }, [user, id]);
+  }, [id]);
 
   const fetchBusiness = async () => {
     try {
@@ -73,12 +72,11 @@ const BusinessDashboard = () => {
         .from("businesses")
         .select("*")
         .eq("id", id)
-        .eq("owner_id", user?.id)
         .single();
 
       if (error) throw error;
       if (!data) {
-        toast.error("Business not found or you don't have access");
+        toast.error("Business not found");
         navigate("/profile");
         return;
       }

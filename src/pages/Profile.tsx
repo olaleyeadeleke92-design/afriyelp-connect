@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +17,7 @@ const profileSchema = z.object({
 });
 
 const Profile = () => {
-  const { user, loading: authLoading } = useAuth();
+  const user = { id: "mock-user-id" };
   const [profile, setProfile] = useState<any>(null);
   const [businesses, setBusinesses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,18 +29,16 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (user) {
-      fetchProfile();
-      fetchBusinesses();
-    }
-  }, [user]);
+    fetchProfile();
+    fetchBusinesses();
+  }, []);
 
   const fetchProfile = async () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("user_id", user?.id)
+        .eq("user_id", user.id)
         .single();
 
       if (error) throw error;
@@ -64,7 +61,7 @@ const Profile = () => {
       const { data, error } = await supabase
         .from("businesses")
         .select("*")
-        .eq("owner_id", user?.id);
+        .eq("owner_id", user.id);
 
       if (error) throw error;
       setBusinesses(data || []);
@@ -89,7 +86,7 @@ const Profile = () => {
       const { error } = await supabase
         .from("profiles")
         .update(formData)
-        .eq("user_id", user?.id);
+        .eq("user_id", user.id);
 
       if (error) throw error;
       
@@ -102,7 +99,7 @@ const Profile = () => {
     }
   };
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
