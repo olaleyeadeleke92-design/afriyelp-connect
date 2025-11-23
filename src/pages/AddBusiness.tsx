@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Building2, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { categories } from "@/data/categories";
@@ -31,7 +30,7 @@ const businessSchema = z.object({
 });
 
 const AddBusinessPage = () => {
-  const { user, loading: authLoading } = useAuth();
+  const user = { id: "mock-user-id" };
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,21 +43,8 @@ const AddBusinessPage = () => {
     website: "",
   });
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      toast.error("Please sign in to list your business");
-      navigate("/auth");
-    }
-  }, [user, authLoading, navigate]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!user) {
-      toast.error("Please sign in to list your business");
-      navigate("/auth");
-      return;
-    }
 
     setLoading(true);
 

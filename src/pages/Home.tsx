@@ -4,7 +4,6 @@ import CategoryCard from "@/components/CategoryCard";
 import BusinessCard from "@/components/BusinessCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useBusinessCheck } from "@/hooks/useBusinessCheck";
 import { categories } from "@/data/categories";
 
 const featuredBusinesses = [
@@ -43,8 +42,6 @@ const featuredBusinesses = [
 ];
 
 const HomePage = () => {
-  useBusinessCheck();
-  
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
