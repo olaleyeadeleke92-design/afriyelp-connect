@@ -11,7 +11,7 @@ interface CategoryCardProps {
 
 const CategoryCard = ({ icon: Icon, name, count, slug }: CategoryCardProps) => {
   return (
-    <Link to={`/listings?category=${slug}`}>
+    <Link to={`/category/${slug}`}>
       <Card className="p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 hover:border-primary">
         <div className="flex flex-col items-center text-center gap-3">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">

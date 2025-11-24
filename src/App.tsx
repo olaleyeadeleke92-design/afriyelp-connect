@@ -11,6 +11,8 @@ import ChatAssistantPage from "./pages/ChatAssistant";
 import AuthPage from "./pages/Auth";
 import ProfilePage from "./pages/Profile";
 import BusinessDashboard from "./pages/BusinessDashboard";
+import CategoriesPage from "./pages/Categories";
+import CategoryDetailPage from "./pages/CategoryDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/listings" element={<ListingsPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/category/:slug" element={<CategoryDetailPage />} />
           <Route path="/business/:id" element={<BusinessProfilePage />} />
           <Route path="/business/:id/dashboard" element={<BusinessDashboard />} />
           <Route path="/add-business" element={<AddBusinessPage />} />
