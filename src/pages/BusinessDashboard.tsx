@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,11 +45,44 @@ const updateSchema = z.object({
 
 const BusinessDashboard = () => {
   const { id } = useParams();
-  const user = { id: "mock-user-id" };
-  const navigate = useNavigate();
-  const [business, setBusiness] = useState<any>(null);
-  const [updates, setUpdates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  // Mock business data - will be replaced with Laravel API
+  const [business] = useState({
+    id: id,
+    name: "Sample Business",
+    category: "Technology & Digital Services",
+    description: "A leading technology solutions provider offering web development, app development, and digital marketing services.",
+    address: "45 Herbert Macaulay Way, Yaba, Lagos",
+    phone: "+2348087654321",
+    whatsapp: "+2348087654321",
+    website: "https://example.com",
+    verified: true,
+    status: "active",
+    views: 1234,
+    call_clicks: 89,
+    whatsapp_clicks: 156,
+  });
+
+  const [updates, setUpdates] = useState([
+    {
+      id: "1",
+      title: "New Service Launch",
+      content: "We're excited to announce our new AI-powered chatbot service!",
+      update_type: "update",
+      created_at: new Date().toISOString(),
+      event_date: null,
+    },
+    {
+      id: "2",
+      title: "Tech Meetup 2025",
+      content: "Join us for our annual technology meetup with industry leaders.",
+      update_type: "event",
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+      event_date: new Date(Date.now() + 604800000).toISOString(),
+    },
+  ]);
+  
+  const [loading] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [updateForm, setUpdateForm] = useState({
     title: "",
@@ -59,53 +91,16 @@ const BusinessDashboard = () => {
     event_date: "",
   });
 
+  // Placeholder for future Laravel API integration
   useEffect(() => {
     if (id) {
-      fetchBusiness();
-      fetchUpdates();
+      // TODO: Fetch business data from Laravel API
+      // fetchBusiness(id);
+      // fetchUpdates(id);
     }
   }, [id]);
 
-  const fetchBusiness = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("businesses")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (error) throw error;
-      if (!data) {
-        toast.error("Business not found");
-        navigate("/profile");
-        return;
-      }
-      setBusiness(data);
-    } catch (error) {
-      console.error("Error fetching business:", error);
-      toast.error("Failed to load business");
-      navigate("/profile");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchUpdates = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("business_updates")
-        .select("*")
-        .eq("business_id", id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setUpdates(data || []);
-    } catch (error) {
-      console.error("Error fetching updates:", error);
-    }
-  };
-
-  const handleAddUpdate = async (e: React.FormEvent) => {
+  const handleAddUpdate = (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
@@ -117,47 +112,36 @@ const BusinessDashboard = () => {
       }
     }
 
-    try {
-      const { error } = await supabase.from("business_updates").insert({
-        business_id: id,
-        title: updateForm.title,
-        content: updateForm.content,
-        update_type: updateForm.update_type,
-        event_date: updateForm.event_date || null,
-      });
+    // Mock add update - will be replaced with Laravel API
+    const newUpdate = {
+      id: Date.now().toString(),
+      business_id: id,
+      title: updateForm.title,
+      content: updateForm.content,
+      update_type: updateForm.update_type,
+      event_date: updateForm.event_date || null,
+      created_at: new Date().toISOString(),
+    };
 
-      if (error) throw error;
-
-      toast.success("Update added successfully");
-      setShowUpdateDialog(false);
-      setUpdateForm({
-        title: "",
-        content: "",
-        update_type: "update",
-        event_date: "",
-      });
-      fetchUpdates();
-    } catch (error) {
-      console.error("Error adding update:", error);
-      toast.error("Failed to add update");
-    }
+    setUpdates([newUpdate, ...updates]);
+    toast.success("Update added successfully");
+    setShowUpdateDialog(false);
+    setUpdateForm({
+      title: "",
+      content: "",
+      update_type: "update",
+      event_date: "",
+    });
+    
+    // TODO: Send to Laravel API
   };
 
-  const handleDeleteUpdate = async (updateId: string) => {
-    try {
-      const { error } = await supabase
-        .from("business_updates")
-        .delete()
-        .eq("id", updateId);
-
-      if (error) throw error;
-
-      toast.success("Update deleted successfully");
-      fetchUpdates();
-    } catch (error) {
-      console.error("Error deleting update:", error);
-      toast.error("Failed to delete update");
-    }
+  const handleDeleteUpdate = (updateId: string) => {
+    // Mock delete - will be replaced with Laravel API
+    setUpdates(updates.filter(update => update.id !== updateId));
+    toast.success("Update deleted successfully");
+    
+    // TODO: Send delete request to Laravel API
   };
 
   const getUpdateIcon = (type: string) => {

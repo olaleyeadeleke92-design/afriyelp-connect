@@ -64,7 +64,7 @@ const HomePage = () => {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link to="/listings">
+            <Link to="/categories">
               <Button variant="outline" size="lg">View All Categories</Button>
             </Link>
           </div>
